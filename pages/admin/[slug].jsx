@@ -173,7 +173,14 @@ function PostManager() {
 }
 
 function PostForm({ defaultValues, postRef, preview }) {
-  const { register, handleSubmit, reset, watch } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState,
+    formState: { errors },
+  } = useForm({
     defaultValues,
     mode: "onChange",
   })
@@ -199,19 +206,26 @@ function PostForm({ defaultValues, postRef, preview }) {
       )}
 
       <div className={preview ? styles.hidden : styles.controls}>
-        <textarea name="content" {...register("content")}></textarea>
-
+        <textarea
+          name="content"
+          {...register("content", { minLength: 10 })}
+        ></textarea>
+        {errors.content && <p className="text-danger">Content is too short</p>}
         <fieldset>
           <input
             className={styles.checkbox}
             name="published"
             type="checkbox"
-            {...register("published")}
+            {...register("content", { minLength: 10 })}
           />
           <label>Published</label>
         </fieldset>
 
-        <button type="submit" className="btn-green">
+        <button
+          type="submit"
+          className="btn-green"
+          disabled={!formState.isValid}
+        >
           Save Changes
         </button>
       </div>
